@@ -4,6 +4,6 @@ This is a short project showing how to use recursive LLM function calls with a v
 
 Try it at:
 
-https://crewgenerator-4rgar97eqygbvpktzneuxj.streamlit.app/
+https://scenariogenerator-zvvejtygsggzfwfrwmaofa.streamlit.app/
 
 ![Screenshot](./Screenshot.png)
