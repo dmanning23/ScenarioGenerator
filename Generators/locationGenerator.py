@@ -140,8 +140,7 @@ class LocationGenerator():
         
         #Create our list of messages for creating locations
         messages = [
-            {'role': 'system', 'content': """Extract a list of locations from the following description of a location. 
-             Each sub-location should be smaller than the parent area.
+            {'role': 'system', 'content': """Based on the following description of a location, decompose it into a list of sub-locations.
              Do not return any areas that match the same name and description that was provided."""},
             {'role': 'user', 'content': location.describe()}
         ]
