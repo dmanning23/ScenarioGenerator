@@ -142,7 +142,7 @@ if __name__ == "__main__":
 
         #Initialize the Streamlit page
     st.set_page_config(
-        page_title="Character List Generator",
+        page_title="Scenario Generator",
         page_icon="🏘")
 
     #recursiontTest()
