@@ -1,7 +1,7 @@
 import os
 import streamlit as st
 from openai import OpenAI
-from keys import openAIapikey
+#from keys import openAIapikey
 import json
 import random
 import sys
@@ -137,8 +137,8 @@ def main():
 if __name__ == "__main__":
 
     #Set up the api key for OpenAI
-    #os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
-    os.environ["OPENAI_API_KEY"] = openAIapikey
+    os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
+    #os.environ["OPENAI_API_KEY"] = openAIapikey
 
         #Initialize the Streamlit page
     st.set_page_config(
