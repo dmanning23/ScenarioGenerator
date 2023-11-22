@@ -165,7 +165,7 @@ class LocationGenerator():
     def GenerateChildLocations(self, location, level = 0, llm = None):
         if not llm:
             #create the client API
-            llm = OpenAI(timeout=30)
+            llm = OpenAI()
 
         #stop recursing at some point
         if level >= 2:
