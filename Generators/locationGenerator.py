@@ -3,6 +3,7 @@ from Simulation.location import Location
 from openai import OpenAI
 from langchain.schema.messages import SystemMessage, HumanMessage
 from langchain.chat_models import ChatOpenAI
+from Generators.itemGenerator import ItemGenerator
 
 class LocationGenerator():
 
@@ -27,6 +28,10 @@ class LocationGenerator():
                                     'type': 'string',
                                     'description': "A description of the location."
                                 },
+                                "canBeSubdivided" :{
+                                    "type": "boolean",
+                                    "description": "True if the description describes a location that can be subdivided, False otherwise"
+                                }
                             },
                             "required": ["name", "description"]
                         },
@@ -57,8 +62,8 @@ class LocationGenerator():
             response.append(self._generate_location(**location))
         return response
 
-    def _generate_location(self, name, description):
-        return Location(name, description)
+    def _generate_location(self, name, description, canBeSubdivided = False):
+        return Location(name, description, canSubdivide=canBeSubdivided)
     
     def _can_subdivide(self, canSubdivide):
         return canSubdivide
@@ -87,20 +92,21 @@ class LocationGenerator():
             #return response_message.content
             return None
 
-    def Generate(self, description):
-
-        client = OpenAI()
+    def Generate(self, setting, llm = None):
+        if not llm:
+            #create the client API
+            llm = OpenAI()
 
         messages = [
             {'role': 'system', 'content': "Given the following setting, generate a list of physical locations"},
-            {'role': 'user', 'content': description}
+            {'role': 'user', 'content': setting.name}
         ]
 
         #Create the list of function definitions that are available to the LLM
         functions = [ LocationGenerator.generateLocationsFunctionDef ]
 
         #Call the LLM...
-        response = client.chat.completions.create(
+        response = llm.chat.completions.create(
             model = 'gpt-3.5-turbo',
             temperature=1.2, #Use a really high temp so the LLM can get creative
             messages = messages,
@@ -142,7 +148,7 @@ class LocationGenerator():
         messages = [
             {'role': 'system', 'content': """Based on the following description of a location, decompose it into a list of sub-locations.
              Do not return any areas that match the same name and description that was provided."""},
-            {'role': 'user', 'content': location.describe()}
+            {'role': 'user', 'content': location.name}
         ]
 
         #Create the list of function definitions that are available to the LLM
@@ -161,17 +167,17 @@ class LocationGenerator():
         else:
             return locations
 
-    def GenerateChildLocations(self, location, level = 0, llm = None):
+    def GenerateChildLocations(self, location, level = 0, maxLevel = 2, llm = None):
         if not llm:
             #create the client API
             llm = OpenAI()
 
         #stop recursing at some point
-        if level >= 2:
+        if level >= maxLevel:
             return
 
         #is the location a single discrete location?
-        if self.CanSubdivide(location, llm):
+        if location.canSubdivide:
 
             #increment the level
             level = level + 1
@@ -184,3 +190,7 @@ class LocationGenerator():
                     location.locations.append(child)
                     #Recurse into child locations
                     self.GenerateChildLocations(child, level, llm)
+
+    def GenerateItems(self, location, llm = None):
+        itemGen = ItemGenerator()
+        location.items = itemGen.GenerateItems(location, llm)

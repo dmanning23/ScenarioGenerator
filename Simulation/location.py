@@ -15,9 +15,10 @@ class Location:
         A collection of things that can be interacted with in this environment.
 
     """
-    def __init__(self, name, description, locations=None, items=None):
+    def __init__(self, name, description, canSubdivide = False, locations=None, items=None):
         self.name = name
         self.description = description
+        self.canSubdivide = canSubdivide
         self.locations = locations
         self.items = items
 

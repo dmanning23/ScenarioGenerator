@@ -2,3 +2,4 @@ openai
 streamlit
 tiktoken
 langchain
+py-linq
